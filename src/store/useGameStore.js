@@ -111,6 +111,12 @@ export const useGameStore = create(
           });
       },
 
+      shuffleHand: () => {
+          set(state => ({
+              hand: [...state.hand].sort(() => Math.random() - 0.5)
+          }));
+      },
+
       submitWord: () => {
           const state = get();
           if (state.selectedLetters.length === 0 || !state.enemyInfo || state.enemyInfo.hp === 0) return;
@@ -119,14 +125,16 @@ export const useGameStore = create(
           const valid = isValidWord(wordString);
           
           if (valid) {
-              const damage = calculateWordScore(state.selectedLetters);
-              const heal = damage + (state.streak * 2); // Heal balance tuning w/ streak
+              const baseDamage = calculateWordScore(state.selectedLetters);
+              const streakBonus = state.streak * 2;
+              const damage = baseDamage + streakBonus; 
+              const heal = damage + streakBonus; // Heal scales purely off damage + streak as well
               const consumedLetters = [...state.selectedLetters];
               
               set((newState) => {
-                  let log = [...newState.combatLog, `You spelled ${wordString.toUpperCase()} for ${damage} damage!`];
-                  if (newState.streak > 0) log.push(`Streak x${newState.streak + 1}!`);
-                  if (heal > 0) log.push(`You heal for ${heal} HP.`);
+                  let log = [...newState.combatLog, `You spelled ${wordString.toUpperCase()} for ${damage} damage (Base: ${baseDamage}, Streak +${streakBonus})!`];
+                  if (newState.streak > 0) log.push(`Combo Streak x${newState.streak + 1} active!`);
+                  if (heal > 0) log.push(`You rapidly heal for ${heal} HP.`);
                   
                   let newEnemyHp = Math.max(0, newState.enemyInfo.hp - damage);
                   let newPlayerHp = Math.min(newState.playerMaxHp, newState.playerHp + heal);

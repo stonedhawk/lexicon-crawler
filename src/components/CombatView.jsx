@@ -4,12 +4,13 @@ import { useGameStore } from '../store/useGameStore';
 import { findPossibleWords } from '../utils/dictionary';
 import Enemy from './Enemy';
 import LetterCard from './LetterCard';
+import { Shuffle } from 'lucide-react';
 
 export default function CombatView() {
   const { 
     hand, deck, discard, selectedLetters, selectLetter, deselectLetter, 
     submitWord, resetSelection, lastWordStatus, combatLog,
-    enemyInfo, playerHp, fullReset, streak
+    enemyInfo, playerHp, fullReset, streak, shuffleHand
   } = useGameStore();
 
   const isGameOver = playerHp === 0;
@@ -70,58 +71,67 @@ export default function CombatView() {
       </div>
 
       {/* Bottom Area: Hand and Submission */}
-      <div className="h-72 bg-zinc-800/50 border-t border-zinc-700 flex flex-col items-center justify-center p-6 rounded-b-3xl relative">
+      <div className="flex-shrink-0 bg-zinc-800/40 border-t border-zinc-700/80 flex flex-col items-center justify-center py-8 px-6 rounded-b-3xl relative mt-4 shadow-inner">
         {!isGameOver && (
           <>
             {/* Draft Area */}
-            <div className="text-zinc-400 mb-2 uppercase tracking-widest text-xs font-bold">Drafted Word</div>
-            <div className={`flex space-x-2 h-24 items-center min-w-[250px] p-4 rounded-xl border-2 transition-colors duration-300 ${lastWordStatus === 'invalid' ? 'border-red-500 bg-red-500/10' : lastWordStatus === 'valid' ? 'border-emerald-500 bg-emerald-500/10' : 'border-zinc-700 bg-zinc-900 shadow-inner'}`}>
-              <AnimatePresence>
+            <div className="text-zinc-500 mb-2 uppercase tracking-widest text-xs font-bold">Drafted Word</div>
+            <div className={`flex space-x-2 h-24 items-center justify-center min-w-[280px] p-4 rounded-xl border-2 transition-all duration-300 ${lastWordStatus === 'invalid' ? 'border-red-500 bg-red-500/10' : lastWordStatus === 'valid' ? 'border-emerald-500 bg-emerald-500/10' : 'border-zinc-700 bg-zinc-900 shadow-inner'}`}>
+              <AnimatePresence mode="popLayout">
                 {selectedLetters.map((l) => (
                   <LetterCard key={l.uniqueId} letter={l} onClick={() => deselectLetter(l)} />
                 ))}
               </AnimatePresence>
-              {selectedLetters.length === 0 && <div className="text-zinc-600 m-auto font-medium text-sm">Draft a word...</div>}
+              {selectedLetters.length === 0 && <div className="text-zinc-600 font-medium text-sm">Draft a word...</div>}
             </div>
 
-            <div className="flex space-x-4 mt-6">
-              <button onClick={resetSelection} className="px-6 py-2 rounded bg-zinc-700 hover:bg-zinc-600 font-bold transition-all cursor-pointer text-sm">CLEAR</button>
+            <div className="flex space-x-4 mt-8 mb-4">
+              <button onClick={resetSelection} className="px-6 py-2 rounded-lg bg-zinc-700/80 hover:bg-zinc-600 font-bold transition-all cursor-pointer text-sm tracking-widest text-zinc-300">CLEAR</button>
+              <button onClick={shuffleHand} className="px-5 py-2 flex items-center justify-center rounded-lg bg-zinc-700/80 hover:bg-zinc-600 font-bold transition-all cursor-pointer text-sm text-zinc-300 group">
+                <Shuffle size={18} className="group-hover:rotate-180 transition-transform duration-300 text-indigo-400" />
+              </button>
               <button 
                 onClick={submitWord}
-                className="px-8 py-2 rounded bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all cursor-pointer shadow-[0_0_15px_rgba(5,150,105,0.4)] tracking-widest"
+                className="px-8 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition-all cursor-pointer shadow-[0_0_15px_rgba(5,150,105,0.4)] tracking-widest text-sm"
               >
                 SUBMIT
               </button>
             </div>
 
             {/* Hand Area with Draw/Discard counts */}
-            <div className="flex flex-col items-center pt-8 w-full">
-              <div className="absolute left-8 bottom-8 flex flex-col space-y-1">
-                 <div className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">Draw Pile</div>
-                 <div className="text-3xl text-zinc-300 font-black">{deck.length}</div>
-              </div>
-
+            <div className="flex flex-col items-center w-full max-w-4xl pt-6">
+              
               {/* Dynamic Hints Bar */}
-              <div className="flex gap-4 mb-8 text-[11px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-800/80 p-3 rounded-xl shadow-inner bg-zinc-900/50">
-                <div className="text-zinc-600 mr-2">Available Words:</div>
-                <div className={hints[3] > 0 ? "text-amber-400/80" : ""}>3-Let: {hints[3]}</div>
-                <div className={hints[4] > 0 ? "text-amber-400" : ""}>4-Let: {hints[4]}</div>
-                <div className={hints[5] > 0 ? "text-emerald-400" : ""}>5-Let: {hints[5]}</div>
-                <div className={hints[6] > 0 ? "text-emerald-500" : ""}>6-Let: {hints[6]}</div>
-                <div className={hints[7] > 0 ? "text-rose-400" : ""}>7-Let: {hints[7]}</div>
+              <div className="flex gap-5 mb-8 text-[11px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-800/80 py-2 px-6 rounded-full shadow-inner bg-zinc-950/50">
+                <div className="text-zinc-600">Hints:</div>
+                <div className={hints[3] > 0 ? "text-amber-400/80" : ""}>3L: {hints[3]}</div>
+                <div className={hints[4] > 0 ? "text-amber-400" : ""}>4L: {hints[4]}</div>
+                <div className={hints[5] > 0 ? "text-emerald-400" : ""}>5L: {hints[5]}</div>
+                <div className={hints[6] > 0 ? "text-emerald-500" : ""}>6L: {hints[6]}</div>
+                <div className={hints[7] > 0 ? "text-rose-400" : ""}>7L: {hints[7]}</div>
               </div>
 
-              <div className="flex space-x-4 min-h-20">
-                <AnimatePresence>
-                  {hand.map((l) => (
-                    <LetterCard key={l.uniqueId} letter={l} onClick={() => selectLetter(l)} />
-                  ))}
-                </AnimatePresence>
-              </div>
+              {/* Flex Grid for Draw / Hand / Discard */}
+              <div className="flex items-center justify-between w-full px-4">
+                 
+                 <div className="flex flex-col items-center bg-zinc-900/50 p-4 rounded-xl border border-zinc-800/50 min-w-24">
+                    <div className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase mb-2">Draw</div>
+                    <div className="text-3xl text-zinc-300 font-black">{deck.length}</div>
+                 </div>
 
-              <div className="absolute right-8 bottom-8 flex flex-col items-end space-y-1">
-                 <div className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">Discard</div>
-                 <div className="text-3xl text-zinc-300 font-black">{discard.length}</div>
+                 <div className="flex justify-center space-x-3 px-8 flex-1 min-h-[85px]">
+                   <AnimatePresence>
+                     {hand.map((l) => (
+                       <LetterCard key={l.uniqueId} letter={l} onClick={() => selectLetter(l)} />
+                     ))}
+                   </AnimatePresence>
+                 </div>
+
+                 <div className="flex flex-col items-center bg-zinc-900/50 p-4 rounded-xl border border-zinc-800/50 min-w-24">
+                    <div className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase mb-2">Discard</div>
+                    <div className="text-3xl text-zinc-300 font-black">{discard.length}</div>
+                 </div>
+
               </div>
             </div>
           </>
