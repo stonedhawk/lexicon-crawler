@@ -1,7 +1,9 @@
 import { create } from 'zustand';
-import { drawRandomLetter, calculateWordScore } from '../utils/scoring';
+import { drawRandomLetter, calculateWordScore, createStartingDeck } from '../utils/scoring';
 import { isValidWord } from '../utils/dictionary';
 import config from '../data/config.json';
+
+const initialDeck = createStartingDeck();
 
 export const useGameStore = create((set, get) => ({
     // Session State
@@ -9,15 +11,20 @@ export const useGameStore = create((set, get) => ({
     playerHp: 50,
     gold: 0,
     floor: 1,
-
-    // Combat State
+    masterDeck: initialDeck,
+    
+    // Encounter State
+    appState: 'combat', // 'combat', 'reward', 'map'
     enemyInfo: null,
+    deck: [],
+    discard: [],
     hand: [],
     selectedLetters: [],
     dictionaryLoaded: false,
     score: 0,
     lastWordStatus: null,
     combatLog: [],
+    rewardOptions: [],
 
     setDictionaryLoaded: () => set({ dictionaryLoaded: true }),
 
@@ -26,21 +33,49 @@ export const useGameStore = create((set, get) => ({
         const enemyTemplate = templates[Math.floor(Math.random() * templates.length)];
         const intent = enemyTemplate.intents[Math.floor(Math.random() * enemyTemplate.intents.length)];
         
+        // Shuffle master deck to start the encounter
+        const shuffledDeck = [...get().masterDeck].sort(() => Math.random() - 0.5);
+
         set({
+            appState: 'combat',
             enemyInfo: { 
                 ...enemyTemplate, 
                 hp: enemyTemplate.maxHp,
                 intent 
             },
             combatLog: [`A wild ${enemyTemplate.name} appears!`],
-            score: 0
+            score: 0,
+            deck: shuffledDeck,
+            discard: [],
+            hand: [],
+            selectedLetters: [],
+            lastWordStatus: null
         });
-        get().drawHand();
+        
+        get().drawFromDeck(7);
     },
 
-    drawHand: () => {
-        const newHand = Array.from({ length: 7 }, drawRandomLetter);
-        set({ hand: newHand, selectedLetters: [], lastWordStatus: null });
+    drawFromDeck: (amount) => {
+        set(state => {
+            let newDeck = [...state.deck];
+            let newDiscard = [...state.discard];
+            let drawn = [];
+            
+            for (let i = 0; i < amount; i++) {
+                if (newDeck.length === 0) {
+                    if (newDiscard.length === 0) break; // Exhausted
+                    newDeck = newDiscard.sort(() => Math.random() - 0.5);
+                    newDiscard = [];
+                }
+                drawn.push(newDeck.shift());
+            }
+            
+            return {
+                deck: newDeck,
+                discard: newDiscard,
+                hand: [...state.hand, ...drawn]
+            };
+        });
     },
 
     selectLetter: (letterItem) => {
@@ -76,6 +111,7 @@ export const useGameStore = create((set, get) => ({
         
         if (valid) {
             const damage = calculateWordScore(state.selectedLetters);
+            const consumedLetters = [...state.selectedLetters];
             
             set((newState) => {
                 let log = [...newState.combatLog, `You spelled ${wordString.toUpperCase()} for ${damage} damage!`];
@@ -91,7 +127,9 @@ export const useGameStore = create((set, get) => ({
                          combatLog: log,
                          lastWordStatus: 'valid',
                          selectedLetters: [],
-                         hand: [] // Clear hand
+                         hand: [],
+                         appState: 'reward',
+                         rewardOptions: [drawRandomLetter(), drawRandomLetter(), drawRandomLetter()]
                      };
                 }
 
@@ -102,27 +140,30 @@ export const useGameStore = create((set, get) => ({
                     log.push(`${newState.enemyInfo.name} attacks you for ${currentIntent.value} damage!`);
                 }
                 
-                if (newPlayerHp === 0) {
+                if (newPlayerHp <= 0) {
+                     newPlayerHp = 0;
                      log.push(`You died... Game Over.`);
                 }
                 
-                // Next intent
                 const nextIntent = newState.enemyInfo.intents[Math.floor(Math.random() * newState.enemyInfo.intents.length)];
                 
-                // Draw replacement letters
-                const diff = 7 - newState.hand.length;
-                const newHand = [...newState.hand, ...Array.from({ length: diff }, drawRandomLetter)];
-
                 return { 
                     score: newState.score + damage,
                     enemyInfo: { ...newState.enemyInfo, hp: newEnemyHp, intent: nextIntent },
                     playerHp: newPlayerHp,
                     combatLog: log,
                     lastWordStatus: 'valid',
+                    discard: [...newState.discard, ...consumedLetters],
                     selectedLetters: [],
-                    hand: newHand
                 };
             });
+
+            // Draw up to hand limit (7)
+            if (get().appState === 'combat') {
+                 const diff = 7 - get().hand.length;
+                 if (diff > 0) get().drawFromDeck(diff);
+            }
+
         } else {
             set({ lastWordStatus: 'invalid' });
         }
@@ -134,5 +175,19 @@ export const useGameStore = create((set, get) => ({
             selectedLetters: [],
             lastWordStatus: null
         }));
+    },
+
+    selectReward: (letterItem) => {
+        set(state => ({
+            masterDeck: [...state.masterDeck, letterItem],
+            floor: state.floor + 1
+        }));
+        // Progress to next combat (Temporary until Map system in Phase 04)
+        get().startEncounter();
+    },
+
+    skipReward: () => {
+        set(state => ({ floor: state.floor + 1 }));
+        get().startEncounter();
     }
 }));

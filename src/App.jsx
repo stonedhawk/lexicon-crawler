@@ -3,9 +3,10 @@ import { useGameStore } from './store/useGameStore';
 import { loadDictionary } from './utils/dictionary';
 import TopBar from './components/TopBar';
 import CombatView from './components/CombatView';
+import RewardScreen from './components/RewardScreen';
 
 function App() {
-  const { dictionaryLoaded, setDictionaryLoaded, startEncounter } = useGameStore();
+  const { dictionaryLoaded, setDictionaryLoaded, startEncounter, appState } = useGameStore();
 
   useEffect(() => {
     loadDictionary().then(() => {
@@ -19,9 +20,12 @@ function App() {
   }
 
   return (
-    <div className="h-screen w-screen bg-zinc-950 text-white flex flex-col p-4 font-sans overflow-hidden">
+    <div className="h-screen w-screen bg-zinc-950 text-white flex flex-col p-4 font-sans overflow-hidden overflow-y-auto">
       <TopBar />
-      <CombatView />
+      <div className="flex-1 flex flex-col relative w-full h-full">
+        {appState === 'combat' && <CombatView />}
+        {appState === 'reward' && <RewardScreen />}
+      </div>
     </div>
   );
 }
