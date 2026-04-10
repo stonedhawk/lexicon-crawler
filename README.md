@@ -1,5 +1,7 @@
 # Lexicon Crawler 📚⚔️
 
+**[Play the Live Native Demo Here!](https://stonedhawk.github.io/lexicon-crawler/)**
+
 A reactive, single-player, web-based roguelite word game where players draft a dynamic deck of letters to defeat enemies structurally bound as nodes on a map! Lexicon Crawler is built entirely natively in the browser leveraging deep reactive pipelines.
 
 ## Features Let Loose:
