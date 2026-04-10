@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import Enemy from './Enemy';
@@ -8,10 +8,35 @@ export default function CombatView() {
   const { 
     hand, deck, discard, selectedLetters, selectLetter, deselectLetter, 
     submitWord, resetSelection, lastWordStatus, combatLog,
-    enemyInfo, playerHp
+    enemyInfo, playerHp, fullReset
   } = useGameStore();
 
   const isGameOver = playerHp === 0;
+  const isCombatOver = enemyInfo?.hp === 0;
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (isGameOver || isCombatOver) return;
+      
+      const key = e.key.toUpperCase();
+      
+      if (key === 'ENTER') {
+        submitWord();
+      } else if (key === 'BACKSPACE') {
+        if (selectedLetters.length > 0) {
+          deselectLetter(selectedLetters[selectedLetters.length - 1]);
+        }
+      } else if (/^[A-Z]$/.test(key)) {
+        const availableLetter = hand.find(l => l.id === key);
+        if (availableLetter) {
+          selectLetter(availableLetter);
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hand, selectedLetters, isGameOver, isCombatOver, submitWord, deselectLetter, selectLetter]);
 
   return (
     <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto h-full relative">
@@ -19,7 +44,10 @@ export default function CombatView() {
         {/* Left Side: Enemy */}
         <div className="flex-1 flex items-center justify-center border-r border-zinc-800">
            {isGameOver ? (
-             <div className="text-4xl text-rose-500 font-bold uppercase tracking-widest text-center">Game Over<br/><span className="text-sm text-zinc-500">You ran out of ink.</span></div>
+             <div className="flex flex-col items-center">
+                 <div className="text-4xl text-rose-500 font-bold uppercase tracking-widest text-center mb-8 drop-shadow-xl">Game Over<br/><span className="text-sm text-zinc-500">You ran out of ink.</span></div>
+                 <button onClick={fullReset} className="px-8 py-3 bg-rose-600 text-white rounded-lg font-bold uppercase tracking-widest hover:bg-rose-500 hover:scale-105 transition-all shadow-[0_0_20px_rgba(225,29,72,0.4)]">Restart Run</button>
+             </div>
            ) : (
              <Enemy />
            )}
