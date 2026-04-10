@@ -4,16 +4,15 @@ import Enemy from './Enemy';
 
 export default function CombatView() {
   const { 
-    hand, selectedLetters, selectLetter, deselectLetter, 
+    hand, deck, discard, selectedLetters, selectLetter, deselectLetter, 
     submitWord, resetSelection, lastWordStatus, combatLog,
     enemyInfo, playerHp
   } = useGameStore();
 
-  const isCombatOver = enemyInfo?.hp === 0;
   const isGameOver = playerHp === 0;
 
   return (
-    <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto h-full">
+    <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto h-full relative">
       <div className="flex-1 flex px-8">
         {/* Left Side: Enemy */}
         <div className="flex-1 flex items-center justify-center border-r border-zinc-800">
@@ -37,15 +36,8 @@ export default function CombatView() {
       </div>
 
       {/* Bottom Area: Hand and Submission */}
-      <div className="h-72 bg-zinc-800/50 border-t border-zinc-700 flex flex-col items-center justify-center p-6 rounded-b-3xl">
-        {isCombatOver && !isGameOver ? (
-           <div className="flex flex-col items-center">
-             <div className="text-emerald-400 font-bold text-2xl mb-4">VICTORY</div>
-             <button onClick={() => window.location.reload()} className="px-8 py-3 bg-zinc-100 text-zinc-900 font-bold rounded hover:bg-white transition-colors">
-               Next Encounter (Temp Reboot)
-             </button>
-           </div>
-        ) : !isGameOver ? (
+      <div className="h-72 bg-zinc-800/50 border-t border-zinc-700 flex flex-col items-center justify-center p-6 rounded-b-3xl relative">
+        {!isGameOver && (
           <>
             {/* Draft Area */}
             <div className="text-zinc-400 mb-2 uppercase tracking-widest text-xs font-bold">Drafted Word</div>
@@ -66,16 +58,26 @@ export default function CombatView() {
               </button>
             </div>
 
-            {/* Hand */}
-            <div className="flex flex-col items-center pt-8">
+            {/* Hand Area with Draw/Discard counts */}
+            <div className="flex flex-col items-center pt-8 w-full">
+              <div className="absolute left-8 bottom-8 flex flex-col space-y-1">
+                 <div className="text-zinc-400 font-bold text-sm tracking-widest uppercase mb-1">Draw Pile</div>
+                 <div className="text-4xl text-zinc-100 font-black">{deck.length}</div>
+              </div>
+
               <div className="flex space-x-4">
                 {hand.map((l) => (
                   <LetterBox key={l.uniqueId} letter={l} onClick={() => selectLetter(l)} />
                 ))}
               </div>
+
+              <div className="absolute right-8 bottom-8 flex flex-col items-end space-y-1">
+                 <div className="text-zinc-400 font-bold text-sm tracking-widest uppercase mb-1">Discard</div>
+                 <div className="text-4xl text-zinc-100 font-black">{discard.length}</div>
+              </div>
             </div>
           </>
-        ) : null}
+        )}
       </div>
     </div>
   );

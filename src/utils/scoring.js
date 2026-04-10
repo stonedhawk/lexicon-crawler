@@ -14,11 +14,18 @@ const VOWEL_POOL = 'AAAAEEEEEIIIIOOOOUUU'.split('');
 const CONS_POOL = 'BBCCDDFFGGHHJKKLLMMNNNPPQRRRSSSTTTTVVWWXYYZ'.split('');
 
 export const drawRandomLetter = () => {
-  // Biasing towards 40% vowels, 60% consonants for playability
   const isVowel = Math.random() < 0.4;
   const pool = isVowel ? VOWEL_POOL : CONS_POOL;
   const char = pool[Math.floor(Math.random() * pool.length)];
   return { ...SCRABBLE_LETTERS[char], uniqueId: crypto.randomUUID() };
+};
+
+export const createStartingDeck = () => {
+  const defaultLetters = ['A', 'A', 'E', 'E', 'I', 'O', 'U', 'T', 'R', 'S', 'L', 'N', 'D', 'G', 'C'];
+  return defaultLetters.map(char => ({
+      ...SCRABBLE_LETTERS[char],
+      uniqueId: crypto.randomUUID()
+  }));
 };
 
 export const calculateWordScore = (lettersArray) => {
