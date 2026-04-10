@@ -28,6 +28,9 @@ export default function CombatView() {
         if (selectedLetters.length > 0) {
           deselectLetter(selectedLetters[selectedLetters.length - 1]);
         }
+      } else if (key === ' ' || e.code === 'Space') {
+        e.preventDefault(); // Stop native page scrolling down
+        shuffleHand();
       } else if (/^[A-Z]$/.test(key)) {
         const availableLetter = hand.find(l => l.id === key);
         if (availableLetter) {
