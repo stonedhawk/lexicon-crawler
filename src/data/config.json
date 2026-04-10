@@ -3,21 +3,165 @@
     {
       "id": "ink_goblin",
       "name": "Ink Goblin",
-      "maxHp": 25,
+      "maxHp": 20,
       "sprite": "👺",
       "intents": [
-        { "type": "attack", "value": 5 },
-        { "type": "attack", "value": 7 }
+        { "type": "attack", "value": 3 },
+        { "type": "attack", "value": 5 }
       ]
     },
     {
-      "id": "paper_golem",
-      "name": "Paper Golem",
-      "maxHp": 60,
-      "sprite": "🧻",
+      "id": "paper_ghost",
+      "name": "Paper Ghost",
+      "maxHp": 35,
+      "sprite": "👻",
+      "intents": [
+        { "type": "attack", "value": 4 },
+        { "type": "attack", "value": 6 }
+      ]
+    },
+    {
+      "id": "vowel_sprite",
+      "name": "Vowel Sprite",
+      "maxHp": 50,
+      "sprite": "🧚",
+      "intents": [
+        { "type": "attack", "value": 6 },
+        { "type": "attack", "value": 8 }
+      ]
+    },
+    {
+      "id": "consonant_golem",
+      "name": "Consonant Golem",
+      "maxHp": 90,
+      "sprite": "🗿",
+      "intents": [
+        { "type": "attack", "value": 9 },
+        { "type": "attack", "value": 12 },
+        { "type": "attack", "value": 15 }
+      ]
+    },
+    {
+      "id": "origami_drake",
+      "name": "Origami Drake",
+      "maxHp": 70,
+      "sprite": "🐲",
       "intents": [
         { "type": "attack", "value": 8 },
         { "type": "attack", "value": 10 }
+      ]
+    },
+    {
+      "id": "dust_bunny",
+      "name": "Dust Bunny",
+      "maxHp": 85,
+      "sprite": "🐇",
+      "intents": [
+        { "type": "attack", "value": 9 },
+        { "type": "attack", "value": 11 }
+      ]
+    },
+    {
+      "id": "ink_elemental",
+      "name": "Ink Elemental",
+      "maxHp": 100,
+      "sprite": "💧",
+      "intents": [
+        { "type": "attack", "value": 10 },
+        { "type": "attack", "value": 13 }
+      ]
+    },
+    {
+      "id": "quill_knight",
+      "name": "Quill Knight",
+      "maxHp": 140,
+      "sprite": "🤺",
+      "intents": [
+        { "type": "attack", "value": 14 },
+        { "type": "attack", "value": 17 },
+        { "type": "attack", "value": 20 }
+      ]
+    },
+    {
+      "id": "syntax_spider",
+      "name": "Syntax Spider",
+      "maxHp": 110,
+      "sprite": "🕷️",
+      "intents": [
+        { "type": "attack", "value": 12 },
+        { "type": "attack", "value": 14 }
+      ]
+    },
+    {
+      "id": "grammar_ghoul",
+      "name": "Grammar Ghoul",
+      "maxHp": 125,
+      "sprite": "🧟",
+      "intents": [
+        { "type": "attack", "value": 13 },
+        { "type": "attack", "value": 16 }
+      ]
+    },
+    {
+      "id": "typo_fiend",
+      "name": "Typo Fiend",
+      "maxHp": 145,
+      "sprite": "👹",
+      "intents": [
+        { "type": "attack", "value": 15 },
+        { "type": "attack", "value": 18 }
+      ]
+    },
+    {
+      "id": "lexicon_guardian",
+      "name": "Lexicon Guardian",
+      "maxHp": 190,
+      "sprite": "🛡️",
+      "intents": [
+        { "type": "attack", "value": 20 },
+        { "type": "attack", "value": 23 },
+        { "type": "attack", "value": 28 }
+      ]
+    },
+    {
+      "id": "paragraph_pantera",
+      "name": "Paragraph Pantera",
+      "maxHp": 160,
+      "sprite": "🐆",
+      "intents": [
+        { "type": "attack", "value": 16 },
+        { "type": "attack", "value": 20 }
+      ]
+    },
+    {
+      "id": "syllable_serpent",
+      "name": "Syllable Serpent",
+      "maxHp": 180,
+      "sprite": "🐍",
+      "intents": [
+        { "type": "attack", "value": 18 },
+        { "type": "attack", "value": 22 }
+      ]
+    },
+    {
+      "id": "dictionary_demon",
+      "name": "Dictionary Demon",
+      "maxHp": 200,
+      "sprite": "😈",
+      "intents": [
+        { "type": "attack", "value": 20 },
+        { "type": "attack", "value": 25 }
+      ]
+    },
+    {
+      "id": "alphabet_architect",
+      "name": "The Alphabet Architect",
+      "maxHp": 300,
+      "sprite": "🧙‍♂️",
+      "intents": [
+        { "type": "attack", "value": 25 },
+        { "type": "attack", "value": 30 },
+        { "type": "attack", "value": 40 }
       ]
     }
   ]

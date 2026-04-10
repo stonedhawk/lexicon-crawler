@@ -36,9 +36,9 @@ export const useGameStore = create(
 
       fullReset: () => set({ ...initialState, dictionaryLoaded: true }),
 
-      startEncounter: (type = 'combat') => {
+      startEncounter: (type = 'combat', enemyIndex = 0) => {
           const templates = config.enemies;
-          const enemyTemplate = templates[Math.floor(Math.random() * templates.length)];
+          const enemyTemplate = templates[enemyIndex] || templates[0];
           const intent = enemyTemplate.intents[Math.floor(Math.random() * enemyTemplate.intents.length)];
           
           const shuffledDeck = [...get().masterDeck].sort(() => Math.random() - 0.5);
