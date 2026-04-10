@@ -12,9 +12,10 @@ export const useGameStore = create((set, get) => ({
     gold: 0,
     floor: 1,
     masterDeck: initialDeck,
+    removalCostLevel: 0,
     
     // Encounter State
-    appState: 'combat', // 'combat', 'reward', 'map'
+    appState: 'map', // 'combat', 'reward', 'map', 'shop'
     enemyInfo: null,
     deck: [],
     discard: [],
@@ -180,14 +181,33 @@ export const useGameStore = create((set, get) => ({
     selectReward: (letterItem) => {
         set(state => ({
             masterDeck: [...state.masterDeck, letterItem],
-            floor: state.floor + 1
+            floor: state.floor + 1,
+            appState: 'map'
         }));
-        // Progress to next combat (Temporary until Map system in Phase 04)
-        get().startEncounter();
     },
 
     skipReward: () => {
-        set(state => ({ floor: state.floor + 1 }));
-        get().startEncounter();
+        set(state => ({ floor: state.floor + 1, appState: 'map' }));
+    },
+    
+    enterShop: () => set({ appState: 'shop' }),
+    
+    leaveShop: () => set(state => ({ floor: state.floor + 1, appState: 'map' })),
+
+    removeCardFn: (letterItem) => {
+        set(state => {
+            const currentCostMap = [50, 75, 100];
+            const currentCost = currentCostMap[Math.min(state.removalCostLevel, 2)];
+            
+            if (state.gold < currentCost) {
+                return state; // Not enough gold, don't mutate
+            }
+            
+            return {
+                gold: state.gold - currentCost,
+                removalCostLevel: state.removalCostLevel + 1,
+                masterDeck: state.masterDeck.filter(c => c.uniqueId !== letterItem.uniqueId)
+            };
+        });
     }
 }));
