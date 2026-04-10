@@ -1,0 +1,24 @@
+{
+  "enemies": [
+    {
+      "id": "ink_goblin",
+      "name": "Ink Goblin",
+      "maxHp": 25,
+      "sprite": "👺",
+      "intents": [
+        { "type": "attack", "value": 5 },
+        { "type": "attack", "value": 7 }
+      ]
+    },
+    {
+      "id": "paper_golem",
+      "name": "Paper Golem",
+      "maxHp": 60,
+      "sprite": "🧻",
+      "intents": [
+        { "type": "attack", "value": 8 },
+        { "type": "attack", "value": 10 }
+      ]
+    }
+  ]
+}
