@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.0] - 2026-04-10
+### Added
+- **Streak Engine**: Rebalanced the baseline HP recovery system. Finding valid words sequentially scales a `streak` multiplier, expanding HP recovery dynamically via `Score + (streak * 2)`. Errors brutally reset the streak back to 0.
+- **HUD Combinatorics**: The combat UI now features a real-time tracking bar predicting exactly how many 3, 4, 5, 6, and 7-letter words are possible given the specific drawn elements in your hand using a recursive permutation engine wrapped in a memoized React hook!
+
 ## [v1.1.0] - 2026-04-10
 ### Added
 - **Keyboard Support**: Added robust event listeners during Combat allowing players to physically type words directly from their keyboard, use `Backspace` to undo, and hit `Enter` to submit.

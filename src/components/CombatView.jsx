@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
+import { findPossibleWords } from '../utils/dictionary';
 import Enemy from './Enemy';
 import LetterCard from './LetterCard';
 
@@ -8,7 +9,7 @@ export default function CombatView() {
   const { 
     hand, deck, discard, selectedLetters, selectLetter, deselectLetter, 
     submitWord, resetSelection, lastWordStatus, combatLog,
-    enemyInfo, playerHp, fullReset
+    enemyInfo, playerHp, fullReset, streak
   } = useGameStore();
 
   const isGameOver = playerHp === 0;
@@ -37,6 +38,9 @@ export default function CombatView() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hand, selectedLetters, isGameOver, isCombatOver, submitWord, deselectLetter, selectLetter]);
+
+  const combinedHand = useMemo(() => [...hand, ...selectedLetters], [hand, selectedLetters]);
+  const hints = useMemo(() => findPossibleWords(combinedHand), [combinedHand]);
 
   return (
     <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto h-full relative">
@@ -93,8 +97,18 @@ export default function CombatView() {
             {/* Hand Area with Draw/Discard counts */}
             <div className="flex flex-col items-center pt-8 w-full">
               <div className="absolute left-8 bottom-8 flex flex-col space-y-1">
-                 <div className="text-zinc-400 font-bold text-sm tracking-widest uppercase mb-1">Draw Pile</div>
-                 <div className="text-4xl text-zinc-100 font-black">{deck.length}</div>
+                 <div className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">Draw Pile</div>
+                 <div className="text-3xl text-zinc-300 font-black">{deck.length}</div>
+              </div>
+
+              {/* Dynamic Hints Bar */}
+              <div className="flex gap-4 mb-8 text-[11px] font-bold text-zinc-500 uppercase tracking-widest border border-zinc-800/80 p-3 rounded-xl shadow-inner bg-zinc-900/50">
+                <div className="text-zinc-600 mr-2">Available Words:</div>
+                <div className={hints[3] > 0 ? "text-amber-400/80" : ""}>3-Let: {hints[3]}</div>
+                <div className={hints[4] > 0 ? "text-amber-400" : ""}>4-Let: {hints[4]}</div>
+                <div className={hints[5] > 0 ? "text-emerald-400" : ""}>5-Let: {hints[5]}</div>
+                <div className={hints[6] > 0 ? "text-emerald-500" : ""}>6-Let: {hints[6]}</div>
+                <div className={hints[7] > 0 ? "text-rose-400" : ""}>7-Let: {hints[7]}</div>
               </div>
 
               <div className="flex space-x-4 min-h-20">
@@ -106,8 +120,8 @@ export default function CombatView() {
               </div>
 
               <div className="absolute right-8 bottom-8 flex flex-col items-end space-y-1">
-                 <div className="text-zinc-400 font-bold text-sm tracking-widest uppercase mb-1">Discard</div>
-                 <div className="text-4xl text-zinc-100 font-black">{discard.length}</div>
+                 <div className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">Discard</div>
+                 <div className="text-3xl text-zinc-300 font-black">{discard.length}</div>
               </div>
             </div>
           </>
