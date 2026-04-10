@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { Coins, Trash2, ArrowRight } from 'lucide-react';
+import LetterCard from './LetterCard';
 
 export default function Shop() {
   const { masterDeck, gold, removalCostLevel, removeCardFn, leaveShop } = useGameStore();
@@ -30,14 +31,13 @@ export default function Shop() {
 
         <div className="flex flex-wrap gap-4 max-h-[400px] overflow-y-auto p-6 bg-zinc-900 border border-zinc-800 rounded-xl shadow-inner scrollbar-hide">
            {masterDeck.map(card => (
-              <div 
+              <LetterCard 
                 key={card.uniqueId} 
+                letter={card} 
+                size="shop"
                 onClick={() => removeCardFn(card)}
-                className={`relative flex items-center justify-center w-16 h-20 bg-zinc-200 text-zinc-900 font-bold text-4xl rounded-md cursor-[crosshair] transition-all shadow-md select-none border-b-4 border-zinc-300 ${gold >= currentCost ? 'hover:-translate-y-2 hover:bg-rose-300 hover:border-rose-400 hover:shadow-rose-500/50' : 'opacity-50 cursor-not-allowed grayscale'}`}
-              >
-                {card.id}
-                <span className="absolute bottom-1 right-1 text-xs font-bold text-zinc-600">{card.score}</span>
-              </div>
+                className={`cursor-[crosshair] transition-all border-b-4 ${gold >= currentCost ? 'hover:border-rose-400 hover:shadow-rose-500/50' : 'opacity-50 !cursor-not-allowed grayscale'}`}
+              />
            ))}
            {masterDeck.length === 0 && <div className="text-zinc-600 m-auto font-medium">Your deck is empty...</div>}
         </div>

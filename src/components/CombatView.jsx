@@ -1,6 +1,8 @@
 import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import Enemy from './Enemy';
+import LetterCard from './LetterCard';
 
 export default function CombatView() {
   const { 
@@ -41,10 +43,12 @@ export default function CombatView() {
           <>
             {/* Draft Area */}
             <div className="text-zinc-400 mb-2 uppercase tracking-widest text-xs font-bold">Drafted Word</div>
-            <div className={`flex space-x-2 h-20 min-w-[250px] p-4 rounded-xl border-2 transition-colors duration-300 ${lastWordStatus === 'invalid' ? 'border-red-500 bg-red-500/10' : lastWordStatus === 'valid' ? 'border-emerald-500 bg-emerald-500/10' : 'border-zinc-700 bg-zinc-900'}`}>
-              {selectedLetters.map((l) => (
-                <LetterBox key={l.uniqueId} letter={l} onClick={() => deselectLetter(l)} />
-              ))}
+            <div className={`flex space-x-2 h-24 items-center min-w-[250px] p-4 rounded-xl border-2 transition-colors duration-300 ${lastWordStatus === 'invalid' ? 'border-red-500 bg-red-500/10' : lastWordStatus === 'valid' ? 'border-emerald-500 bg-emerald-500/10' : 'border-zinc-700 bg-zinc-900 shadow-inner'}`}>
+              <AnimatePresence>
+                {selectedLetters.map((l) => (
+                  <LetterCard key={l.uniqueId} letter={l} onClick={() => deselectLetter(l)} />
+                ))}
+              </AnimatePresence>
               {selectedLetters.length === 0 && <div className="text-zinc-600 m-auto font-medium text-sm">Draft a word...</div>}
             </div>
 
@@ -65,10 +69,12 @@ export default function CombatView() {
                  <div className="text-4xl text-zinc-100 font-black">{deck.length}</div>
               </div>
 
-              <div className="flex space-x-4">
-                {hand.map((l) => (
-                  <LetterBox key={l.uniqueId} letter={l} onClick={() => selectLetter(l)} />
-                ))}
+              <div className="flex space-x-4 min-h-20">
+                <AnimatePresence>
+                  {hand.map((l) => (
+                    <LetterCard key={l.uniqueId} letter={l} onClick={() => selectLetter(l)} />
+                  ))}
+                </AnimatePresence>
               </div>
 
               <div className="absolute right-8 bottom-8 flex flex-col items-end space-y-1">
@@ -79,18 +85,6 @@ export default function CombatView() {
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-function LetterBox({ letter, onClick }) {
-  return (
-    <div 
-      onClick={onClick}
-      className="relative flex items-center justify-center w-14 h-16 bg-zinc-200 text-zinc-900 font-bold text-3xl rounded-md cursor-pointer hover:-translate-y-1 hover:bg-white transition-transform shadow-md select-none"
-    >
-      {letter.id}
-      <span className="absolute bottom-1 right-1 text-[10px] font-bold text-zinc-600">{letter.score}</span>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useGameStore } from '../store/useGameStore';
 import { Swords } from 'lucide-react';
 
@@ -17,7 +18,15 @@ export default function Enemy() {
         <span>Attack {enemyInfo.intent?.value || 0}</span>
       </div>
 
-      <div className="text-8xl mb-4 drop-shadow-xl select-none">{enemyInfo.sprite}</div>
+      <motion.div 
+        key={enemyInfo.hp} 
+        initial={{ x: 0 }}
+        animate={{ x: [0, -10, 10, -10, 10, 0] }}
+        transition={{ duration: 0.4 }}
+        className="text-8xl mb-4 drop-shadow-xl select-none"
+      >
+        {enemyInfo.sprite}
+      </motion.div>
       <h2 className="text-xl font-bold tracking-wider mb-2 text-zinc-100 uppercase">{enemyInfo.name}</h2>
       
       {/* HP Bar */}

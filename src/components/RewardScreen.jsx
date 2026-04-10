@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/useGameStore';
+import LetterCard from './LetterCard';
 
 export default function RewardScreen() {
   const { rewardOptions, selectReward, skipReward } = useGameStore();
@@ -11,14 +12,13 @@ export default function RewardScreen() {
       
       <div className="flex space-x-12 mt-8">
         {rewardOptions.map(option => (
-          <div 
+          <LetterCard 
             key={option.uniqueId} 
-            onClick={() => selectReward(option)}
-            className="w-32 h-44 bg-zinc-800 text-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center border-2 border-zinc-700 hover:border-amber-500 hover:scale-105 transition-all cursor-pointer group"
-          >
-            <div className="text-7xl font-bold group-hover:text-amber-400 transition-colors drop-shadow-md select-none">{option.id}</div>
-            <div className="text-sm mt-6 text-zinc-400 font-bold scoreboard">Score: {option.score}</div>
-          </div>
+            letter={option} 
+            size="large" 
+            onClick={() => selectReward(option)} 
+            className="hover:border-amber-400 hover:shadow-amber-500/50"
+          />
         ))}
       </div>
 
