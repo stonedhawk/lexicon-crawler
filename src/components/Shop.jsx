@@ -10,26 +10,26 @@ export default function Shop() {
   const currentCost = currentCostMap[Math.min(removalCostLevel, 2)];
   
   return (
-    <div className="flex-1 flex flex-col items-center p-8 space-y-8 w-full max-w-5xl mx-auto h-full overflow-y-auto">
-      <div className="flex justify-between items-center w-full">
-         <h2 className="text-4xl font-bold tracking-widest text-yellow-400 flex items-center drop-shadow-lg"><Coins className="mr-4" size={40}/> MERCHANT</h2>
-         <button onClick={leaveShop} className="flex flex-col items-center px-6 py-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 font-bold border border-zinc-700 group cursor-pointer transition-colors shadow-lg shadow-zinc-900/50">
+    <div className="flex-1 flex flex-col items-center p-4 sm:p-8 space-y-6 sm:space-y-8 w-full max-w-5xl mx-auto h-full overflow-y-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
+         <h2 className="text-3xl sm:text-4xl font-bold tracking-widest text-yellow-400 flex items-center drop-shadow-lg"><Coins className="mr-3 sm:mr-4 w-8 h-8 sm:w-10 sm:h-10"/> MERCHANT</h2>
+         <button onClick={leaveShop} className="flex flex-col items-center px-6 py-2 bg-zinc-800 rounded-xl hover:bg-zinc-700 font-bold border border-zinc-700 group cursor-pointer transition-colors shadow-lg shadow-zinc-900/50 w-full sm:w-auto">
             <span className="text-zinc-400 group-hover:text-white uppercase tracking-widest text-sm mb-1 transition-colors">Leave</span>
             <ArrowRight size={20} className="text-zinc-500 group-hover:text-amber-400 transition-colors" />
          </button>
       </div>
 
-      <div className="w-full bg-zinc-800/50 rounded-2xl p-8 border border-zinc-700 shadow-2xl">
-        <div className="flex justify-between items-center mb-6">
-           <h3 className="text-2xl font-bold text-rose-400 flex items-center tracking-widest uppercase"><Trash2 className="mr-3"/> Remove Card</h3>
-           <div className={`px-6 py-2 font-black rounded-full border-2 tracking-widest ${gold >= currentCost ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-red-500/50 bg-red-500/10 text-red-500'}`}>
+      <div className="w-full bg-zinc-800/50 rounded-2xl p-4 sm:p-8 border border-zinc-700 shadow-2xl">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+           <h3 className="text-xl sm:text-2xl font-bold text-rose-400 flex items-center tracking-widest uppercase"><Trash2 className="mr-2 sm:mr-3"/> Remove Card</h3>
+           <div className={`px-4 sm:px-6 py-2 font-black rounded-full border-2 tracking-widest text-sm sm:text-base ${gold >= currentCost ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-red-500/50 bg-red-500/10 text-red-500'}`}>
               Cost: {currentCost} Gold
            </div>
         </div>
         
-        <p className="text-zinc-400 mb-8 uppercase tracking-widest text-sm font-bold">Click a letter to permanently remove it from your master deck.</p>
+        <p className="text-zinc-400 mb-6 sm:mb-8 text-center sm:text-left uppercase tracking-widest text-[10px] sm:text-sm font-bold">Click a letter to permanently remove it from your master deck.</p>
 
-        <div className="flex flex-wrap gap-4 max-h-[400px] overflow-y-auto p-6 bg-zinc-900 border border-zinc-800 rounded-xl shadow-inner scrollbar-hide">
+        <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 max-h-[400px] overflow-y-auto p-4 sm:p-6 bg-zinc-900 border border-zinc-800 rounded-xl shadow-inner scrollbar-hide">
            {masterDeck.map(card => (
               <LetterCard 
                 key={card.uniqueId} 
