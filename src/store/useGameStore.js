@@ -24,6 +24,7 @@ const initialState = {
     lastWordStatus: null,
     combatLog: [],
     rewardOptions: [],
+    streak: 0,
 };
 
 export const useGameStore = create(
@@ -52,6 +53,7 @@ export const useGameStore = create(
               playerHp: state.playerMaxHp, // Floor Replenish
               combatLog: [`A wild ${enemyTemplate.name} appears!`],
               score: 0,
+              streak: 0,
               deck: shuffledDeck,
               discard: [],
               hand: [],
@@ -118,11 +120,12 @@ export const useGameStore = create(
           
           if (valid) {
               const damage = calculateWordScore(state.selectedLetters);
-              const heal = Math.floor(damage / 2); // Heal balance tuning
+              const heal = damage + (state.streak * 2); // Heal balance tuning w/ streak
               const consumedLetters = [...state.selectedLetters];
               
               set((newState) => {
                   let log = [...newState.combatLog, `You spelled ${wordString.toUpperCase()} for ${damage} damage!`];
+                  if (newState.streak > 0) log.push(`Streak x${newState.streak + 1}!`);
                   if (heal > 0) log.push(`You heal for ${heal} HP.`);
                   
                   let newEnemyHp = Math.max(0, newState.enemyInfo.hp - damage);
@@ -140,7 +143,8 @@ export const useGameStore = create(
                            selectedLetters: [],
                            hand: [],
                            appState: 'reward',
-                           rewardOptions: [drawRandomLetter(), drawRandomLetter(), drawRandomLetter()]
+                           rewardOptions: [drawRandomLetter(), drawRandomLetter(), drawRandomLetter()],
+                           streak: newState.streak + 1
                        };
                   }
 
@@ -166,6 +170,7 @@ export const useGameStore = create(
                       lastWordStatus: 'valid',
                       discard: [...newState.discard, ...consumedLetters],
                       selectedLetters: [],
+                      streak: newState.streak + 1
                   };
               });
 
@@ -176,7 +181,7 @@ export const useGameStore = create(
               }
 
           } else {
-              set({ lastWordStatus: 'invalid' });
+              set({ lastWordStatus: 'invalid', streak: 0 });
           }
       },
       
