@@ -3,7 +3,7 @@ import { useGameStore } from '../store/useGameStore';
 import { Swords, ShoppingCart, Skull } from 'lucide-react';
 
 export default function MapNode() {
-  const { floor, startEncounter, enterShop } = useGameStore();
+  const { floor, startEncounter, enterShop, fullReset } = useGameStore();
 
   const nodes = [
     { f: 1, type: 'combat', label: 'Basic Encounter', icon: Swords, color: 'text-zinc-400' },
@@ -33,7 +33,10 @@ export default function MapNode() {
             ))}
           </div>
       ) : (
-          <div className="text-4xl font-bold text-emerald-400 mt-12 animate-pulse drop-shadow-[0_0_20px_rgba(52,211,153,0.8)]">YOU BEAT THE CRAWL!</div>
+          <div className="flex flex-col items-center mt-12 animate-in fade-in zoom-in duration-1000">
+             <div className="text-4xl font-bold text-emerald-400 mb-8 animate-pulse drop-shadow-[0_0_20px_rgba(52,211,153,0.8)]">YOU BEAT THE CRAWL!</div>
+             <button onClick={fullReset} className="px-8 py-3 bg-emerald-600 text-white rounded-lg font-bold uppercase tracking-widest hover:bg-emerald-500 hover:scale-105 transition-all shadow-[0_0_20px_rgba(5,150,105,0.4)]">Play Again</button>
+          </div>
       )}
     </div>
   );
