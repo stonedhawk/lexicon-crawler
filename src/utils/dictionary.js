@@ -35,8 +35,13 @@ export const findPossibleWords = (lettersArray) => {
         }
         if (m.length === 7) return;
         
+        const seen = new Set();
         // Explore all branches
         for (let i = 0; i < arr.length; i++) {
+            const char = arr[i];
+            if (seen.has(char)) continue;
+            seen.add(char);
+            
             let curr = arr.slice();
             let next = curr.splice(i, 1);
             permute(curr, m.concat(next));
