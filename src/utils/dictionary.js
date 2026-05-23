@@ -1,35 +1,44 @@
-let dictionarySet = null;
+import { TrieEngine } from '@rahulmrx/game-ready-dictionary';
+
+let trie = null;
 
 export const loadDictionary = async () => {
-    if (dictionarySet) return dictionarySet;
+    if (trie) return trie;
     try {
-        const response = await fetch('/enable1.txt');
-        const text = await response.text();
-        const words = text.split('\n').map(word => word.trim().toLowerCase()).filter(w => w);
-        dictionarySet = new Set(words);
-        console.log(`Loaded dictionary with ${dictionarySet.size} words.`);
-        return dictionarySet;
+        const response = await fetch('/large_trie.json');
+        const trieData = await response.json();
+        trie = new TrieEngine(trieData);
+        console.log("Loaded high-performance precompiled Trie dictionary successfully.");
+        return trie;
     } catch (err) {
-        console.error("Failed to load dictionary:", err);
-        return new Set();
+        console.error("Failed to load precompiled Trie dictionary:", err);
+        return null;
     }
 };
 
 export const isValidWord = (word) => {
-    if (!dictionarySet) return false;
-    return dictionarySet.has(word.toLowerCase());
+    if (!trie) return false;
+    return trie.validate(word.toLowerCase());
 };
 
 export const findPossibleWords = (lettersArray) => {
-    if (!dictionarySet) return { 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
+    if (!trie) return { 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
     
     const chars = lettersArray.map(l => l.id.toLowerCase());
     const results = new Set();
     
     const permute = (arr, m = []) => {
+        const str = m.join('');
+        
+        // Trie Backtracking / Prefix Pruning:
+        // If the current sequence is not a valid prefix of any English word,
+        // we can immediately prune this search branch!
+        if (str.length > 0 && !trie.isPrefix(str)) {
+            return;
+        }
+
         if (m.length >= 3 && m.length <= 7) {
-            const str = m.join('');
-            if (dictionarySet.has(str)) {
+            if (trie.validate(str)) {
                 results.add(str);
             }
         }
@@ -46,7 +55,7 @@ export const findPossibleWords = (lettersArray) => {
             let next = curr.splice(i, 1);
             permute(curr, m.concat(next));
         }
-    }
+    };
     
     permute(chars);
     
