@@ -29,3 +29,4 @@ if (typeof window !== 'undefined') {
     configurable: true
   });
 }
+// End of Vitest setup file
