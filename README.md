@@ -43,9 +43,9 @@ graph TD
 
 | Feature | Description | Technical Execution |
 | :--- | :--- | :--- |
-| **Instant Dictionary Search** | Instantly validates any spelled word against the complete dictionary. | Uses an `O(1)` hash set holding **170,000+ cached words** (`ENABLE-12`) loaded on startup. |
+| **Instant Dictionary Search** | Instantly validates any spelled word against the complete dictionary. | Sourced from the high-performance [game-ready-dictionary](https://github.com/stonedhawk/game-ready-dictionary) package, utilizing a precompiled **182,000+ word Large Trie** with built-in profanity and trademark filtering. |
 | **Rogue-lite State Store** | Tracks decks, discards, hands, gold, health, streaks, and game progress globally. | Centralized state engine utilizing **Zustand** with persistent storage syncing. |
-| **Optimized Combinatorics** | Computes the exact number of playable words remaining in your hand in real-time. | Recursive permutation tree with **branch pruning** to skip duplicate letter patterns. |
+| **Optimized Combinatorics** | Computes the exact number of playable words remaining in your hand in real-time. | Employs our own **Trie-based prefix pruning & backtracking algorithm** to abort traversal of invalid stems instantly, dropping worst-case recursion paths from ~13,700 down to **under 100**! |
 | **Kinetic Game Juice** | Dynamic physical reactions when drafting, shuffling, or attacking. | High-performance canvas micro-animations powered by **Framer Motion** and layout IDs. |
 | **Tactile Keyboard Controls** | Play completely hands-free from the mouse, typing letters directly. | Interactive keyboard hook binding alphanumeric keys, `Backspace`, `Enter`, and `Spacebar`. |
 | **Crash & Refresh Protection** | Never lose your floor progression if you accidentally close the browser tab. | Persistent local storage middleware safeguarding player variables across sessions. |
@@ -83,7 +83,7 @@ Defeating enemies grants **15 Gold** and lets you choose one of three random let
 
 ```
 ├── public/                 # Static Assets
-│   ├── enable1.txt         # 170,000+ cached word list
+│   ├── large_trie.json     # Precompiled 182k-word Trie dictionary dataset
 │   └── favicon.svg         # Game icon
 ├── src/
 │   ├── components/         # Pure React view layout
